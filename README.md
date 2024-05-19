@@ -47,5 +47,5 @@ pip install openpyxl html2image pywin32
 Para executar o script, basta rodar:
 
 ```sh
-python script.py
+python enviaElogio.py
 ```
