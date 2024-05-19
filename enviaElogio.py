@@ -1,6 +1,5 @@
 import openpyxl
 from html2image import Html2Image
-from PIL import Image
 import base64
 import win32com.client as win32
 import os
