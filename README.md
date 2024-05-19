@@ -1,42 +1,51 @@
-# Survey Email
+# Projeto de Reconhecimento de Atendimento
 
-Este é um projeto que envolve o envio de e-mails para pesquisas.
+Este projeto lê dados de um arquivo Excel, constrói emails de reconhecimento de excelente atendimento e cria rascunhos desses emails no Outlook, incorporando uma imagem gerada a partir de um conteúdo HTML.
 
-## Descrição
+## Dependências
 
-Este projeto consiste em um script Python para automatizar o envio de e-mails de pesquisa. O script lê dados de uma planilha Excel, seleciona os destinatários com base em determinados critérios e envia e-mails personalizados para esses destinatários. Além disso, os resultados da pesquisa são registrados de volta na planilha para análise posterior.
+Certifique-se de ter as seguintes bibliotecas instaladas:
 
-## Funcionalidades
+- `openpyxl`: Para ler dados de arquivos Excel.
+- `html2image`: Para converter conteúdo HTML em imagens.
+- `pywin32`: Para criar rascunhos de email no Outlook.
 
-- Leitura de dados de uma planilha Excel.
-- Seleção de destinatários com base em critérios específicos.
-- Envio de e-mails personalizados.
-- Registro dos resultados da pesquisa de volta na planilha.
+Para instalar essas dependências, você pode usar o pip:
 
-## Como usar
+```sh
+pip install openpyxl html2image pywin32
+```
 
-1. Clone este repositório para o seu ambiente local:
-    ```bash
-    git clone https://github.com/GuilhermeSavioRibas/Survey-email.git
-    ```
-2. Navegue até o diretório do projeto:
-    ```bash
-    cd Survey-email
-    ```
-3. Certifique-se de ter as dependências instaladas. Você pode instalar as dependências usando o pip:
-    ```bash
-    pip install openpyxl html2image pillow pywin32
-    ```
-4. Execute o script `enviaElogio.py`:
-    ```bash
-    python enviaElogio.py
-    ```
-5. Verifique a caixa de saída do seu cliente de e-mail para confirmar o envio dos e-mails.
+## Estrutura do Código
 
-## Contribuição
+### Funções Principais
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir problemas (issues) ou enviar pull requests com melhorias, correções de bugs ou novas funcionalidades.
+- **ler_dados_excel**: Lê dados de um arquivo Excel e retorna as linhas onde a coluna F é "Não".
+- **construir_email**: Constrói o conteúdo HTML do email usando informações fornecidas.
+- **html_para_imagem**: Converte conteúdo HTML em uma imagem e salva em um caminho especificado.
+- **criar_rascunho_outlook**: Cria um rascunho de email no Outlook com a imagem gerada incorporada.
 
-## Licença
+### Fluxo de Trabalho
 
-Este projeto é licenciado sob a [MIT License](LICENSE).
+1. **Ler Dados do Excel**: A função `ler_dados_excel` lê um arquivo Excel e filtra as linhas conforme a necessidade.
+2. **Construir Email**: A função `construir_email` recebe as informações do analista, usuário, número do chamado e a mensagem de elogio para gerar o conteúdo HTML do email.
+3. **Converter HTML em Imagem**: A função `html_para_imagem` transforma o conteúdo HTML em uma imagem.
+4. **Criar Rascunho no Outlook**: A função `criar_rascunho_outlook` cria um rascunho de email no Outlook, incorporando a imagem gerada.
+
+## Uso
+
+### Configuração Inicial
+
+1. **Configurar o Caminho do Arquivo Excel**:
+   - Atualize o caminho do arquivo Excel na função `ler_dados_excel` se necessário.
+
+2. **Configurar Destinatários CC**:
+   - Adicione os endereços de email CC na lista `cc` no bloco `if __name__ == "__main__":`.
+
+### Executar o Script
+
+Para executar o script, basta rodar:
+
+```sh
+python script.py
+```
