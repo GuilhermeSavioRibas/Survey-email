@@ -6,14 +6,14 @@ Este projeto lê dados de um arquivo Excel, constrói emails de reconhecimento d
 
 Certifique-se de ter as seguintes bibliotecas instaladas:
 
-- `openpyxl`: Para ler dados de arquivos Excel.
+- `xlwings`: Para ler dados de arquivos Excel.
 - `html2image`: Para converter conteúdo HTML em imagens.
 - `pywin32`: Para criar rascunhos de email no Outlook.
 
 Para instalar essas dependências, você pode usar o pip:
 
 ```sh
-pip install openpyxl html2image pywin32
+pip install xlwings html2image pywin32
 ```
 
 ## Estrutura do Código
