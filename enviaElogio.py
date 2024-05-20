@@ -205,6 +205,8 @@ if __name__ == "__main__":
         nome_cliente = planilha.range(f'H{idx}').value
 
         cc = ['email1@example.com', 'email2@example.com']  # Adicione os endereços de e-mail CC aqui
+        # alterar o campo cc para puxar do excel de acordo com a empresa e grupo.
+        
         corpo_email = construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio, logos_clientes.get(nome_cliente, "Link padrão da logo do usuário"))
         imagem_path = f'email_image_{idx}.png'
         
