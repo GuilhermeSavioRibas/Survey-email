@@ -5,7 +5,7 @@ import win32com.client as win32
 import os
 
 def ler_dados_excel():
-    arquivo_excel = r'C:\Users\Ribas\Desktop\Pasta1.xlsm'
+    arquivo_excel = r'C:\workspace\Survey-email\Pasta1.xlsm'
     wb = xw.Book(arquivo_excel)
     planilha = wb.sheets[0]
     dados = []
