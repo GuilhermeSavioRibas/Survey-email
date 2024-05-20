@@ -12,8 +12,9 @@ def ler_dados_excel():
     # Lê os dados da planilha
     for row in range(2, planilha.range('A' + str(planilha.cells.last_cell.row)).end('up').row + 1):
         if planilha.range(f'F{row}').value == "Não":  # Verifica se a coluna enviou_email (F) é "Não"
-            dados.append(row)
+            dados.append((row, planilha.range(f'G{row}').value))  # Adiciona o número da linha e o grupo
     return dados, wb, planilha
+
 
 def construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio, logo_usuario):
     html_template = """
@@ -198,7 +199,7 @@ if __name__ == "__main__":
     }
     
     dados, wb, planilha = ler_dados_excel()
-    for idx in dados:
+    for idx, grupo in dados:
         nome_analista = planilha.range(f'A{idx}').value
         nome_usuario = planilha.range(f'B{idx}').value
         numero_chamado = planilha.range(f'C{idx}').value
@@ -206,9 +207,28 @@ if __name__ == "__main__":
         email_analista = planilha.range(f'E{idx}').value
         nome_cliente = planilha.range(f'H{idx}').value
 
-        cc = ['email1@example.com', 'email2@example.com']  # Adicione os endereços de e-mail CC aqui
-        # alterar o campo cc para puxar do excel de acordo com a empresa e grupo.
-        
+        cc = []  # Lista padrão de CC
+        if nome_cliente == "Cteep":
+            if grupo == "service desk":
+                cc.extend(["Carlos.A.Goncalves@BR.unisys.com", "Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "SDISASTD@unisys.com", "Jose.Valezi@BR.unisys.com"])
+            elif grupo == "after":
+                cc.extend(["Carlos.A.Goncalves@BR.unisys.com", "Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "SDISASTD@unisys.com", "Jose.Valezi@BR.unisys.com", "luis.monteiro@br.unisys.com"])
+            elif grupo == "field":
+                cc.extend(["Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com"])
+            elif grupo == "outros":
+                cc.extend(["Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com"])
+            elif grupo == "servidores":
+                cc.extend(["Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "joao.alves@br.unisys.com"])
+        elif nome_cliente in ["UUS", "Henkel", "Flowserve"]:
+            if grupo == "service desk":
+                cc.extend(["leticia.santos@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "HenkelSDSaoPaolo@unisys.com", "Jose.Valezi@BR.unisys.com"])
+            elif grupo == "after":
+                cc.extend(["leticia.santos@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "HenkelSDSaoPaolo@unisys.com", "Jose.Valezi@BR.unisys.com", "luis.monteiro@br.unisys.com"])
+            # Adicione mais casos conforme necessário para os grupos restantes e clientes
+            
+        else:
+            print("Cliente ou grupo não reconhecido.")
+
         corpo_email = construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio, logos_clientes.get(nome_cliente, "Link padrão da logo do usuário"))
         imagem_path = f'email_image_{idx}.png'
         
@@ -217,7 +237,11 @@ if __name__ == "__main__":
         
         # Verifique se o arquivo de imagem foi criado
         if os.path.exists(imagem_path):
-            criar_rascunho_outlook(email_analista, nome_cliente, 'Reconhecimento de Excelente Atendimento', imagem_path, cc)
+            if cc:
+                criar_rascunho_outlook(email_analista, nome_cliente, 'Reconhecimento de Excelente Atendimento', imagem_path, cc)
+            else:
+                criar_rascunho_outlook(email_analista, nome_cliente, 'Reconhecimento de Excelente Atendimento', imagem_path)
+                
             # Atualizar a coluna enviou_email (F) para "Sim"
             planilha.range(f'F{idx}').value = "Sim"
             os.remove(imagem_path)  # Remove o arquivo de imagem após criar o rascunho
@@ -226,3 +250,4 @@ if __name__ == "__main__":
     
     # Salvar alterações na planilha
     wb.save()
+    
