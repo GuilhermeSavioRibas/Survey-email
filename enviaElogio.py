@@ -5,7 +5,7 @@ import win32com.client as win32
 import os
 
 def ler_dados_excel():
-    arquivo_excel = r'C:\workspace\Survey-email\Pasta1.xlsm'
+    arquivo_excel = r'C:\Users\Ribas\Desktop\Pasta1.xlsm'
     wb = xw.Book(arquivo_excel)
     planilha = wb.sheets[0]
     dados = []
@@ -15,7 +15,7 @@ def ler_dados_excel():
             dados.append(row)
     return dados, wb, planilha
 
-def construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio):
+def construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio, logo_usuario):
     html_template = """
     <!DOCTYPE html>
     <html>
@@ -143,13 +143,13 @@ def construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio
             </div>
             <div class="logos">
                 <img src="https://companieslogo.com/img/orig/UIS_BIG-d64350be.png?t=1677383940" alt="Logo da Empresa do Analista">
-                <img style="height: 100px; width: auto;" src="https://companieslogo.com/img/orig/HEN3.DE-168e26bd.png?t=1593285011" alt="Logo da Empresa do Usuário">
+                <img src="{}" alt="Logo da Empresa do Usuário">
             </div>
             <div class="footer"></div>
         </div>
     </body>
     </html>
-    """.format(nome_analista, nome_usuario, mensagem_elogio, numero_chamado)
+    """.format(nome_analista, nome_usuario, mensagem_elogio, numero_chamado, logo_usuario)
     return html_template
 
 def html_para_imagem(html_content, output_path, width, height):
@@ -167,6 +167,9 @@ def criar_rascunho_outlook(destinatario, nome_cliente, assunto_base, imagem_path
     assunto = f"[{nome_cliente}] {assunto_base}"
     rascunho.Subject = assunto
     
+    # Carregar o link da logo da empresa do usuário com base no nome do cliente
+    logo_usuario = logos_clientes.get(nome_cliente, "Link para o logo padrão")
+    
     if os.path.exists(imagem_path):
         with open(imagem_path, 'rb') as f:
             image_data = f.read()
@@ -177,7 +180,21 @@ def criar_rascunho_outlook(destinatario, nome_cliente, assunto_base, imagem_path
     else:
         print(f"Erro: O arquivo de imagem {imagem_path} não foi encontrado.")
 
+
 if __name__ == "__main__":
+    # Definindo os links das logos das empresas dos usuários
+    logos_clientes = {
+        "Flowserve": "https://companieslogo.com/img/orig/FLS-2ff8c8f5.png?t=1683790943",
+        "UUS": "https://companieslogo.com/img/orig/UIS_BIG-d64350be.png?t=1677383940",
+        "Cteep": "https://www.isacteep.com.br/Arquivos/Imagens/logo-cteep-face.jpg",
+        "Heineken": "https://companieslogo.com/img/orig/HEIA.AS_BIG-46c1e364.png?t=1665028384",
+        "Alpek": "https://alpekpolyester.com.br/wp-content/uploads/2019/01/alpek_polyesterTM-Logo.png",
+        "Unilever": "https://companieslogo.com/img/orig/UL_BIG-593a9828.png?t=1633508892",
+        "Henkel": "https://companieslogo.com/img/orig/HEN3.DE-168e26bd.png?t=1593285011",
+        # Adicione os links para os outros clientes conforme necessário
+
+    }
+    
     dados, wb, planilha = ler_dados_excel()
     for idx in dados:
         nome_analista = planilha.range(f'A{idx}').value
@@ -188,7 +205,7 @@ if __name__ == "__main__":
         nome_cliente = planilha.range(f'H{idx}').value
 
         cc = ['email1@example.com', 'email2@example.com']  # Adicione os endereços de e-mail CC aqui
-        corpo_email = construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio)
+        corpo_email = construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio, logos_clientes.get(nome_cliente, "Link padrão da logo do usuário"))
         imagem_path = f'email_image_{idx}.png'
         
         # Criar a imagem a partir do HTML
