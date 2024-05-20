@@ -5,7 +5,7 @@ import win32com.client as win32
 import os
 
 def ler_dados_excel():
-    arquivo_excel = r'C:\Users\Ribas\Desktop\Pasta1.xlsm'
+    arquivo_excel = r'C:\workspace\Survey-email\Pasta1.xlsm'
     wb = xw.Book(arquivo_excel)
     planilha = wb.sheets[0]
     dados = []
@@ -114,7 +114,9 @@ def construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio
             }}
 
             .logos img {{
-                height: 50px;
+                height: 50px; /* Defina a altura fixa */
+                width: 100px; /* Defina a largura fixa */
+                object-fit: contain; /* Mantenha a proporção da imagem */
             }}
         </style>
     </head>
