@@ -210,20 +210,20 @@ if __name__ == "__main__":
         cc = []  # Lista padrão de CC
         if nome_cliente == "Cteep":
             if grupo == "service desk":
-                cc.extend(["Carlos.A.Goncalves@BR.unisys.com", "Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "SDISASTD@unisys.com", "Jose.Valezi@BR.unisys.com"])
+                cc.extend(["teste@teste.com", "teste.teste@BR.teste.com", "teste.teste@br.teste.com", "teste.teste-teste@teste.teste.com", "teste@teste.com", "teste.teste@BR.teste.com"])
             elif grupo == "after":
-                cc.extend(["Carlos.A.Goncalves@BR.unisys.com", "Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "SDISASTD@unisys.com", "Jose.Valezi@BR.unisys.com", "luis.monteiro@br.unisys.com"])
+                cc.extend(["teste.A.teste@BR.teste.com", "teste.teste@BR.teste.com", "teste.teste@br.teste.com", "teste.teste-teste@co.teste.com", "teste@teste.com", "teste.teste@BR.teste.com", "teste.teste@br.teste.com"])
             elif grupo == "field":
-                cc.extend(["Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com"])
+                cc.extend(["teste.teste@BR.teste.com", "teste.teste@br.teste.com", "teste.teste-teste@co.teste.com"])
             elif grupo == "outros":
-                cc.extend(["Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com"])
+                cc.extend(["teste.teste@BR.teste.com", "teste.teste@br.teste.com", "teste.teste-teste@co.teste.com"])
             elif grupo == "servidores":
-                cc.extend(["Jefferson.Ribeiro@BR.unisys.com", "francisco.souza@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "joao.alves@br.unisys.com"])
+                cc.extend(["teste.teste@BR.teste.com", "teste.teste@br.teste.com", "teste.teste-teste@co.teste.com", "teste.teste@br.teste.com"])
         elif nome_cliente in ["UUS", "Henkel", "Flowserve"]:
             if grupo == "service desk":
-                cc.extend(["leticia.santos@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "HenkelSDSaoPaolo@unisys.com", "Jose.Valezi@BR.unisys.com"])
+                cc.extend(["teste.teste@br.teste.com", "teste.teste-teste@co.teste.com", "teste@teste.com", "teste.teste@BR.teste.com"])
             elif grupo == "after":
-                cc.extend(["leticia.santos@br.unisys.com", "Oscar.Vargas-Nino@co.unisys.com", "HenkelSDSaoPaolo@unisys.com", "Jose.Valezi@BR.unisys.com", "luis.monteiro@br.unisys.com"])
+                cc.extend(["teste.teste@br.teste.com", "teste.teste-teste@co.teste.com", "teste@unisys.com", "Jose.Valezi@BR.teste.com", "teste.teste@br.teste.com"])
             # Adicione mais casos conforme necessário para os grupos restantes e clientes
             
         else:
