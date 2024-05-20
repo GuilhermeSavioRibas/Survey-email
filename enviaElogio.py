@@ -1,18 +1,19 @@
-import openpyxl
+import xlwings as xw
 from html2image import Html2Image
 import base64
 import win32com.client as win32
 import os
 
 def ler_dados_excel():
-    arquivo_excel = r'C:\Users\Ribas\Desktop\Pasta1.xlsx'
-    wb = openpyxl.load_workbook(arquivo_excel)
-    planilha = wb.active
+    arquivo_excel = r'C:\Users\Ribas\Desktop\Pasta1.xlsm'
+    wb = xw.Book(arquivo_excel)
+    planilha = wb.sheets[0]
     dados = []
-    for row in planilha.iter_rows(min_row=2, values_only=True):
-        if row[5] == "Não":  # Verifica se a coluna F (índice 5) é "Não"
+    # Lê os dados da planilha
+    for row in range(2, planilha.range('A' + str(planilha.cells.last_cell.row)).end('up').row + 1):
+        if planilha.range(f'F{row}').value == "Não":  # Verifica se a coluna enviou_email (F) é "Não"
             dados.append(row)
-    return dados
+    return dados, wb, planilha
 
 def construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio):
     html_template = """
@@ -155,28 +156,52 @@ def html_para_imagem(html_content, output_path, width, height):
     hti = Html2Image()
     hti.screenshot(html_str=html_content, save_as=output_path, size=(width, height))
 
-def criar_rascunho_outlook(destinatario, assunto, imagem_path, cc=None):
+def criar_rascunho_outlook(destinatario, nome_cliente, assunto_base, imagem_path, cc=None):
     outlook = win32.Dispatch("Outlook.Application")
     rascunho = outlook.CreateItem(0)  # 0 para email
     rascunho.To = destinatario
     if cc:
         rascunho.CC = ";".join(cc)  # Adiciona os destinatários em cópia
+    
+    # Modificando o assunto para incluir o nome do cliente
+    assunto = f"[{nome_cliente}] {assunto_base}"
     rascunho.Subject = assunto
-    with open(imagem_path, 'rb') as f:
-        image_data = f.read()
-    image_base64 = base64.b64encode(image_data).decode('utf-8')
-    image_html = f'<img src="data:image/png;base64,{image_base64}" alt="Reconhecimento de Excelente Atendimento"/>'
-    rascunho.HTMLBody = image_html
-    rascunho.Display()  # Abre o rascunho no Outlook
+    
+    if os.path.exists(imagem_path):
+        with open(imagem_path, 'rb') as f:
+            image_data = f.read()
+        image_base64 = base64.b64encode(image_data).decode('utf-8')
+        image_html = f'<img src="data:image/png;base64,{image_base64}" alt="Reconhecimento de Excelente Atendimento"/>'
+        rascunho.HTMLBody = image_html
+        rascunho.Display()  # Abre o rascunho no Outlook
+    else:
+        print(f"Erro: O arquivo de imagem {imagem_path} não foi encontrado.")
 
 if __name__ == "__main__":
-    dados = ler_dados_excel()
-    for idx, linha in enumerate(dados):
-        nome_analista, nome_usuario, numero_chamado, mensagem_elogio, email_analista, enviado = linha[:6]
+    dados, wb, planilha = ler_dados_excel()
+    for idx in dados:
+        nome_analista = planilha.range(f'A{idx}').value
+        nome_usuario = planilha.range(f'B{idx}').value
+        numero_chamado = planilha.range(f'C{idx}').value
+        mensagem_elogio = planilha.range(f'D{idx}').value
+        email_analista = planilha.range(f'E{idx}').value
+        nome_cliente = planilha.range(f'H{idx}').value
+
         cc = ['email1@example.com', 'email2@example.com']  # Adicione os endereços de e-mail CC aqui
         corpo_email = construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio)
         imagem_path = f'email_image_{idx}.png'
+        
+        # Criar a imagem a partir do HTML
         html_para_imagem(corpo_email, imagem_path, 600, 600)
-        criar_rascunho_outlook(email_analista, 'Reconhecimento de Excelente Atendimento', imagem_path, cc)
-        os.remove(imagem_path)  # Remove o arquivo de imagem após criar o rascunho
-
+        
+        # Verifique se o arquivo de imagem foi criado
+        if os.path.exists(imagem_path):
+            criar_rascunho_outlook(email_analista, nome_cliente, 'Reconhecimento de Excelente Atendimento', imagem_path, cc)
+            # Atualizar a coluna enviou_email (F) para "Sim"
+            planilha.range(f'F{idx}').value = "Sim"
+            os.remove(imagem_path)  # Remove o arquivo de imagem após criar o rascunho
+        else:
+            print(f"Erro: A imagem {imagem_path} não foi criada corretamente.")
+    
+    # Salvar alterações na planilha
+    wb.save()
