@@ -144,7 +144,7 @@ def construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio
                 <img src="https://companieslogo.com/img/orig/UIS_BIG-d64350be.png?t=1677383940" alt="Logo da Empresa do Analista">
                 <img style="height: 100px; width: auto;" src="https://companieslogo.com/img/orig/HEN3.DE-168e26bd.png?t=1593285011" alt="Logo da Empresa do Usuário">
             </div>
-            <div class="footer">Esta é uma mensagem automática. Por favor, não responda a este email.</div>
+            <div class="footer"></div>
         </div>
     </body>
     </html>
@@ -154,7 +154,6 @@ def construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio
 def html_para_imagem(html_content, output_path, width, height):
     hti = Html2Image()
     hti.screenshot(html_str=html_content, save_as=output_path, size=(width, height))
-
 
 def criar_rascunho_outlook(destinatario, assunto, imagem_path, cc=None):
     outlook = win32.Dispatch("Outlook.Application")
@@ -168,12 +167,12 @@ def criar_rascunho_outlook(destinatario, assunto, imagem_path, cc=None):
     image_base64 = base64.b64encode(image_data).decode('utf-8')
     image_html = f'<img src="data:image/png;base64,{image_base64}" alt="Reconhecimento de Excelente Atendimento"/>'
     rascunho.HTMLBody = image_html
-    rascunho.Save()
+    rascunho.Display()  # Abre o rascunho no Outlook
 
 if __name__ == "__main__":
     dados = ler_dados_excel()
     for idx, linha in enumerate(dados):
-        nome_analista, nome_usuario, numero_chamado, mensagem_elogio, email_analista, enviado = linha
+        nome_analista, nome_usuario, numero_chamado, mensagem_elogio, email_analista, enviado = linha[:6]
         cc = ['email1@example.com', 'email2@example.com']  # Adicione os endereços de e-mail CC aqui
         corpo_email = construir_email(nome_analista, nome_usuario, numero_chamado, mensagem_elogio)
         imagem_path = f'email_image_{idx}.png'
